@@ -44,6 +44,10 @@ const engine = new Engine({
 let fpsMeter: FpsMeter;
 const sprite = PIXI.Sprite.from('images/logo.png');
 const btnPlay = PIXI.Sprite.from('images/btn.png');
+const game = new PIXI.Container();
+const container = new PIXI.Container();
+// let background;
+let peca;
 
 function resizeCanvas(): void {
     const resize = () => {
@@ -65,7 +69,10 @@ window.onload = load;
 
 function load() {
     resizeCanvas();
-    create();
+    engine.loader.add('matchup', 'images/matchup.json');
+    engine.loader.add('sparkles', 'images/sparkles.json');
+    engine.loader.load(create);
+    // create();
 } // load
 
 function create() {
@@ -73,11 +80,47 @@ function create() {
     /* Create your Game Objects here */
     /* ***************************** */
 
+    // background
+    let background = new PIXI.Sprite( PIXI.Texture.from(`asset_bg.png`) );
+    background.anchor.set(0.5);
+    background.x = engine.renderer.width / 2;
+    background.y = engine.renderer.height / 2;
+    // container.width = engine.renderer.width;
+    // container.height = engine.renderer.height;
+    game.addChild(background);
+
+    // pecas
+    const pecas = [];
+    for (let i = 1; i <= 5; i++) {
+        const texture = PIXI.Texture.from(`asset_gem${i}.png`);
+        pecas.push(texture);
+    }
+
+    for (let i = 0; i < 8; i++) {//cria pecas
+        for (let j = 0; j < 8; j++) {
+            peca = new PIXI.AnimatedSprite(pecas);
+            peca.name = 'peca'+i;
+            peca.anchor.set(0.5);
+            peca.x = i*50;
+            peca.y = j*50;
+            peca.width = 50;
+            peca.height = 50;
+            peca.animationSpeed = 0.5;
+            peca.loop =true;
+            container.addChild(peca);
+            
+        }
+    }
+    container.x = (engine.renderer.width / 2) - container.width/2;
+    container.y = (engine.renderer.height / 2) - container.height/2;
+    game.addChild(container);
+    
+
     /* Sprite */
     sprite.anchor.set(0.5);
     sprite.x = engine.renderer.width / 2;
-    sprite.y = engine.renderer.height / 2;
-    // engine.stage.addChild(sprite);
+    sprite.y = 100;
+    game.addChild(sprite);
 
     // Button play
     btnPlay.anchor.set(0.5);
@@ -89,10 +132,10 @@ function create() {
     btnPlay.buttonMode = true;
     btnPlay.addListener('pointerdown', () => {
         console.log('aqui');
-        engine.stage = sprite;
+        engine.stage = game;
     });
     engine.stage.addChild(btnPlay);
-    console.log(engine.stage);
+    // console.log(engine.stage);
 
 
 

@@ -1,0 +1,235 @@
+{
+	"frames": {
+		"sparkles_0.png": {
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_1.png": {
+			"frame": {
+				"x": 153,
+				"y": 1,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_10.png": {
+			"frame": {
+				"x": 305,
+				"y": 1,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_2.png": {
+			"frame": {
+				"x": 1,
+				"y": 153,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_3.png": {
+			"frame": {
+				"x": 153,
+				"y": 153,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_4.png": {
+			"frame": {
+				"x": 305,
+				"y": 153,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_5.png": {
+			"frame": {
+				"x": 1,
+				"y": 305,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_6.png": {
+			"frame": {
+				"x": 153,
+				"y": 305,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_7.png": {
+			"frame": {
+				"x": 305,
+				"y": 305,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_8.png": {
+			"frame": {
+				"x": 457,
+				"y": 1,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		},
+		"sparkles_9.png": {
+			"frame": {
+				"x": 457,
+				"y": 153,
+				"w": 150,
+				"h": 150
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 150,
+				"h": 150
+			},
+			"sourceSize": {
+				"w": 150,
+				"h": 150
+			}
+		}
+	},
+	"meta": {
+		"app": "http://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "sparkles.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 608,
+			"h": 456
+		},
+		"scale": "1"
+	}
+}
