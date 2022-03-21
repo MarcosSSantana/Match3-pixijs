@@ -2,6 +2,7 @@
 
 import * as PIXI from 'pixi.js';
 import { FpsMeter } from './fps-meter';
+import { gsap } from "gsap";
 
 interface EngineParams {
     containerId: string,
@@ -44,9 +45,9 @@ const engine = new Engine({
 let fpsMeter: FpsMeter;
 const sprite = PIXI.Sprite.from('images/logo.png');
 // const btnPlay = PIXI.Sprite.from('images/btn.png');
+// let background;
 const game = new PIXI.Container();
 const container = new PIXI.Container();
-// let background;
 let peca : PIXI.Sprite;
 let jogando : boolean = false;
 let pecaNum :int = 0;
@@ -59,28 +60,40 @@ function troca(obj:PIXI.Sprite):void{
         click1 = obj;
         click1.alpha = 0.5;
         trocando = true;
-        console.log(click2);
+        // console.log(click2);
         
     }else if(trocando){
         trocando = false;
         click2 = obj;
-
+        console.log(container.children.indexOf(click1), container.children.indexOf(click2));
+        
         var index1x = click1.x;
 	    var index2x = click2.x;
         
         var index1y = click1.y;
 	    var index2y = click2.y;
 
-        console.log(index1x, index2x);
+        // console.log(index1x, index2x);
         
-        click1.x = index2x;
-        click2.x = index1x;
+        // click1.x = index2x;
+        // click2.x = index1x;
 
-        click1.y = index2y;
-        click2.y = index1y;
+        // click1.y = index2y;
+        // click2.y = index1y;
 
-        click1.alpha = 1;
+        // click1.alpha = 1;
+        // TweenMax.to(click1, 2.0, { blur: 5.0, yoyo: true, repeat: -1 });
+        gsap.to(click1, 1, {
+            alpha: 1,
+            x: index2x,
+            y: index2y
+        });
 
+        gsap.to(click2, 1, {
+            alpha: 1,
+            x: index1x,
+            y: index1y
+        })
 
         // container.swapChildren(click1, click2);
 
@@ -205,8 +218,8 @@ function create() {
     
     let btnPlay = new PIXI.Sprite( PIXI.Texture.from(`asset_button_up.png`) );
     btnPlay.anchor.set(0.5);
-    btnPlay.width = 200;
-    btnPlay.height = 160;
+    // btnPlay.width = 200;
+    // btnPlay.height = 160;
     btnPlay.x = engine.renderer.width / 2;
     btnPlay.y = engine.renderer.height / 2;
     btnPlay.interactive = true;
