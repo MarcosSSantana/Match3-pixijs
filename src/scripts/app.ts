@@ -49,11 +49,26 @@ const sprite = PIXI.Sprite.from('images/logo.png');
 const game = new PIXI.Container();
 const container = new PIXI.Container();
 let peca : PIXI.Sprite;
-let jogando : boolean = false;
 let pecaNum :int = 0;
+let pecaH : int = 50;
+let pecaW : int = 50;
+
+let jogando : boolean = false;
 let click1 :PIXI.Sprite;
 let click2 :PIXI.Sprite;
 let trocando : boolean = false;
+
+function adjacente(difX:Number, difY:Number):boolean{
+    if( ( difX == pecaW || difX == -pecaW ) && difY == 0 ){//horizontal
+        console.log('horizontal');
+        return true;
+    }else if( ( difY == pecaH || difY == -pecaH )  && difX == 0 ){//vertical
+        console.log('vertical');
+        return true;
+    }else{
+        return false;
+    }
+}
 
 function troca(obj:PIXI.Sprite):void{
     if( !trocando){
@@ -65,24 +80,41 @@ function troca(obj:PIXI.Sprite):void{
     }else if(trocando){
         trocando = false;
         click2 = obj;
-        console.log(container.children.indexOf(click1), container.children.indexOf(click2));
+        // console.log(container.children.indexOf(click1), container.children.indexOf(click2));
+        // console.log(click1.x, click2.x);
+        // console.log(click1.y, click2.y);
         
+        // pega a diferença
+        let difX = click1.x-click2.x;
+        let difY = click1.y-click2.y;
+        // console.log(difX, difY);
+
+        if ( !adjacente(difX, difY) ){//compara se é a posição do lado
+            gsap.to(click1, 1, {
+                alpha: 1,
+            });
+            return;
+        }
+
+        // if( ( difX == 50 || difX == -50 ) && difY == 0 ){//horizontal
+        //     console.log('horizontal');
+        // }else if( ( difY == 50 || difY == -50 )  && difX == 0 ){//vertical
+        //     console.log('vertical');
+        // }else{
+        //     gsap.to(click1, 1, {
+        //         alpha: 1,
+        //     });
+        //     return;
+        // }
+        // if(click1.x)
+        container.swapChildren(click1, click2);// troca as posições
         var index1x = click1.x;
-	    var index2x = click2.x;
-        
         var index1y = click1.y;
-	    var index2y = click2.y;
-
-        // console.log(index1x, index2x);
         
-        // click1.x = index2x;
-        // click2.x = index1x;
-
-        // click1.y = index2y;
-        // click2.y = index1y;
-
-        // click1.alpha = 1;
-        // TweenMax.to(click1, 2.0, { blur: 5.0, yoyo: true, repeat: -1 });
+	    var index2x = click2.x;
+	    var index2y = click2.y;
+        
+        //anima a troca
         gsap.to(click1, 1, {
             alpha: 1,
             x: index2x,
@@ -94,31 +126,7 @@ function troca(obj:PIXI.Sprite):void{
             x: index1x,
             y: index1y
         })
-
-        // container.swapChildren(click1, click2);
-
-        // var index1 = container.children.indexOf(click1);
-	    // var index2 = container.children.indexOf(click2);
-        // console.log(index1, index2);
-        // container.removeChild(click1);
-        // container.removeChild(click2);
-        // // return;
-        // if(index1 < index2)
-        // {
-        //     console.log('aqui');
-            
-        //     container.addChildAt(click2, index1);
-        //     container.addChildAt(click1, index2);
-        // }
-        // else
-        // {
-        //     console.log('aqui 2');
-
-        //     container.addChildAt(click1, index2);
-        //     container.addChildAt(click2, index1);
-        // }
-        // container.updateTransform();
-        //limpar variaveis
+       
     }
 }
 
@@ -183,12 +191,12 @@ function create() {
             peca.anchor.set(0.5);
             peca.x = i*50;
             peca.y = j*50;
-            peca.width = 50;
-            peca.height = 50;
+            peca.width = pecaW;
+            peca.height = pecaH;
             peca.interactive = true;
             peca.buttonMode = true;
             peca.on('pointerdown', (event:any) => {
-                console.log(event.target.name);
+                // console.log(event.target.name);
                 troca(event.target)
                 // container.updateTransform();
                 // even.
