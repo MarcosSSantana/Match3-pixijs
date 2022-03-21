@@ -37,8 +37,8 @@ class Engine {
 
 const engine = new Engine({
     containerId: 'game',
-    canvasW: 800,
-    canvasH: 450,
+    canvasW: 768,
+    canvasH: 1024,
     fpsMax: 60
 });
 
@@ -70,7 +70,48 @@ function adjacente(difX:Number, difY:Number):boolean{
     }
 }
 
+function checkWin(container:PIXI.Container):void{
+    // let obj = container.children[0].name;
+    // console.log(obj);
+    let arrayWin = [];
+    //CHECA COLUNA
+    for (let j = 0; j < 8; j++) {
+        let ini = j*8;
+        let max = ini+7;
+        console.log(ini, max);
+        
+        for (let i = ini; i <= max; i++) {
+            if(container.children[i] != undefined){
+                console.log(i);
+                
+                arrayWin.push(container.children[i]);
+                
+                if(arrayWin.length >3){
+                    arrayWin.shift();
+                }
+                // console.log(arrayWin);
+                if( arrayWin.length == 3 ){
+                    if( (arrayWin[0].name == arrayWin[1].name) && (arrayWin[0].name == arrayWin[2].name) ){
+                        arrayWin.forEach(element => {
+                            element.destroy();
+                            // element.alpha = 0.5;
+                        });
+                        arrayWin = [];
+                    }
+                }
+            }
+        }
+    }
+    
+    //CHECA LINHA
+    
+    // console.log(container.children[0].texture.textureCacheIds[0]);
+    
+}
+
 function troca(obj:PIXI.Sprite):void{
+    checkWin(container);
+
     if( !trocando){
         click1 = obj;
         click1.alpha = 0.5;
@@ -180,33 +221,34 @@ function create() {
         const texture = PIXI.Texture.from(`asset_gem${i}.png`);
         pecas.push(texture);
     }
-
+    // console.log(pecas[0].textureCacheIds[0]);
+    
     for (let i = 0; i < 8; i++) {//cria pecas
         for (let j = 0; j < 8; j++) {
             pecaNum++;
-            let numFrame = randomInt(1,5);
+            let numFrame = randomInt(0,4);
             // console.log(numFrame);
             peca = new PIXI.Sprite(pecas[numFrame]);
-            peca.name = 'peca'+pecaNum;
+            // peca.name = 'peca'+pecaNum;
+            peca.name = pecas[numFrame].textureCacheIds[0];
             peca.anchor.set(0.5);
-            peca.x = i*50;
-            peca.y = j*50;
+            peca.x = i*pecaW;
+            peca.y = j*pecaH;
             peca.width = pecaW;
             peca.height = pecaH;
             peca.interactive = true;
             peca.buttonMode = true;
             peca.on('pointerdown', (event:any) => {
-                // console.log(event.target.name);
+                // console.log(event.target.texture.textureCacheIds[0]);
                 troca(event.target)
-                // container.updateTransform();
-                // even.
             });
-            // peca.swapChildren
-            // peca.vx = 0;
+           
             container.addChild(peca);
             
         }
     }
+    console.log(pecaNum);
+    
     // container.swapChildren()
     container.width = 410;
     container.height = 410;
