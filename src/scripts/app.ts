@@ -71,8 +71,12 @@ function adjacente(difX:Number, difY:Number):boolean{
 }
 
 function checkWin(container:PIXI.Container):void{
-    // let obj = container.children[0].name;
-    // console.log(obj);
+    let obj = container.children;
+    console.log(obj);
+
+    // obj[0].destroy();
+    // obj[6].destroy();
+    // return;
     let arrayWin = [];
     //CHECA COLUNA
     for (let j = 0; j < 8; j++) {
@@ -82,7 +86,7 @@ function checkWin(container:PIXI.Container):void{
         
         for (let i = ini; i <= max; i++) {
             if(container.children[i] != undefined){
-                console.log(i);
+                // console.log(i);
                 
                 arrayWin.push(container.children[i]);
                 
@@ -97,6 +101,7 @@ function checkWin(container:PIXI.Container):void{
                             // element.alpha = 0.5;
                         });
                         arrayWin = [];
+                        return;
                     }
                 }
             }
@@ -104,7 +109,34 @@ function checkWin(container:PIXI.Container):void{
     }
     
     //CHECA LINHA
-    
+    for (let j = 0; j < 8; j++) {
+        let num = j;
+        for (let i = 0; i < 8; i++) {
+            // console.log(num);
+            
+            if(container.children[num] != undefined){
+                console.log(num);
+                
+                arrayWin.push(container.children[num]);
+                
+                if(arrayWin.length >3){
+                    arrayWin.shift();
+                }
+                // console.log(arrayWin);
+                if( arrayWin.length == 3 ){
+                    if( (arrayWin[0].name == arrayWin[1].name) && (arrayWin[0].name == arrayWin[2].name) ){
+                        arrayWin.forEach(element => {
+                            element.destroy();
+                            // element.alpha = 0.5;
+                        });
+                        arrayWin = [];
+                        return;
+                    }
+                }
+            }
+            num +=8;
+        }
+    }
     // console.log(container.children[0].texture.textureCacheIds[0]);
     
 }
