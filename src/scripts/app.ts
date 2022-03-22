@@ -43,9 +43,8 @@ const engine = new Engine({
 });
 
 let fpsMeter: FpsMeter;
-const sprite = PIXI.Sprite.from('images/logo.png');
-// const btnPlay = PIXI.Sprite.from('images/btn.png');
-// let background;
+// const sprite = PIXI.Sprite.from('images/logo.png');
+
 const game = new PIXI.Container();
 const container = new PIXI.Container();
 let peca : PIXI.Sprite;
@@ -76,7 +75,7 @@ function checkWin(container:PIXI.Container):void{
 
     // obj[0].destroy();
     // obj[6].destroy();
-    // return;
+    return;
     let arrayWin = [];
     //CHECA COLUNA
     for (let j = 0; j < 8; j++) {
@@ -142,8 +141,7 @@ function checkWin(container:PIXI.Container):void{
 }
 
 function troca(obj:PIXI.Sprite):void{
-    checkWin(container);
-
+    
     if( !trocando){
         click1 = obj;
         click1.alpha = 0.5;
@@ -201,6 +199,9 @@ function troca(obj:PIXI.Sprite):void{
         })
        
     }
+
+    checkWin(container);
+
 }
 
 function resizeCanvas(): void {
@@ -239,7 +240,7 @@ function create() {
     /* ***************************** */
 
     // background
-    let background = new PIXI.Sprite( PIXI.Texture.from(`asset_bg.png`) );
+    const background = new PIXI.Sprite( PIXI.Texture.from(`asset_bg.png`) );
     background.anchor.set(0.5);
     background.x = engine.renderer.width / 2;
     background.y = engine.renderer.height / 2;
@@ -274,6 +275,7 @@ function create() {
                 // console.log(event.target.texture.textureCacheIds[0]);
                 troca(event.target)
             });
+            peca.on('pointermove', onDragMove);
            
             container.addChild(peca);
             
@@ -290,28 +292,50 @@ function create() {
     game.addChild(container);
     
 
-    /* Sprite */
-    sprite.anchor.set(0.5);
-    sprite.x = engine.renderer.width / 2;
-    sprite.y = 100;
-    game.addChild(sprite);
+    // /* Sprite */
+    // sprite.anchor.set(0.5);
+    // sprite.x = engine.renderer.width / 2;
+    // sprite.y = 100;
+    // game.addChild(sprite);
 
     // Button play
-    
-    let btnPlay = new PIXI.Sprite( PIXI.Texture.from(`asset_button_up.png`) );
+    const btnPlay = new PIXI.Sprite( PIXI.Texture.from(`asset_large_btn_down.png`) );
     btnPlay.anchor.set(0.5);
-    // btnPlay.width = 200;
-    // btnPlay.height = 160;
     btnPlay.x = engine.renderer.width / 2;
     btnPlay.y = engine.renderer.height / 2;
     btnPlay.interactive = true;
     btnPlay.buttonMode = true;
-    btnPlay.addListener('pointerdown', () => {
-        console.log('aqui');
+    btnPlay.on('pointerdown', (event:any) => {
+        event.target.alpha = 0.4;
+        event.target.scale.set(0.9);
+        // this.texture = test;
+    });
+    btnPlay.on('pointerup', (event:any) => {
+        event.target.alpha = 1;
         engine.stage = game;
         jogando = true;
     });
+
+    const style = new PIXI.TextStyle({
+        fontFamily: 'Arial',
+        fontSize: 46,
+        fontWeight: 'bold',
+        fill: ['#ffffff', '#a1a1a1'], // gradient
+        strokeThickness: 5,
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 6,
+        dropShadowDistance: 6,
+        wordWrap: true,
+        wordWrapWidth: 440,
+    });
+    const btnText = new PIXI.Text('PLAY', style);
+    btnText.anchor.set(0.5);
+    btnPlay.addChild(btnText);
+
     engine.stage.addChild(btnPlay);
+
     // console.log(engine.stage);
 
 
@@ -332,6 +356,16 @@ function create() {
     
 } // create
 
+function onDragMove() {
+    // console.log(event);
+    
+    // // if (this.dragging) {
+    //     const newPosition = this.data.getLocalPosition(this.parent);
+    //     this.x = newPosition.x;
+    //     this.y = newPosition.y;
+    // }
+}
+
 function update() {
     fpsMeter.updateTime();
 
@@ -349,16 +383,26 @@ function render() {
     /* ***************************** */
 
     /* Sprite */
-    sprite.rotation += 0.01;
+    // sprite.rotation += 0.01;
 
-    if(jogando && false){
+    // if(jogando && false){
+    if(jogando){
 
-        container.children.forEach(element => {
+        // container.children.forEach((element, key) => {
+        container.children.forEach((element) => {
             // console.log(container.y+container.height);
             
-            if(element.y < (container.y+container.height) ){
-                element.y +=1;
+            if(element.y < (350) ){
+                element.y +=5;
             }
+
+            // container.children.forEach((neighbor, keyN) => {
+            //     if(key != keyN){
+            //         if ( (neighbor.y+(pecaH/2)) > element.y ) {
+            //             neighbor.y -=5;
+            //         }
+            //     }
+            // });
         });
     }
     
