@@ -53,6 +53,7 @@ let pecaH : int = 50;
 let pecaW : int = 50;
 
 let jogando : boolean = false;
+let fisica : boolean = false;
 let click1 :PIXI.Sprite;
 let click2 :PIXI.Sprite;
 let trocando : boolean = false;
@@ -69,19 +70,19 @@ function adjacente(difX:Number, difY:Number):boolean{
     }
 }
 
-function checkWin(container:PIXI.Container):void{
+function checkWin(container:PIXI.Container):boolean{
     let obj = container.children;
     console.log(obj);
 
     // obj[0].destroy();
     // obj[6].destroy();
-    return;
+    // return;
     let arrayWin = [];
     //CHECA COLUNA
     for (let j = 0; j < 8; j++) {
         let ini = j*8;
         let max = ini+7;
-        console.log(ini, max);
+        // console.log(ini, max);
         
         for (let i = ini; i <= max; i++) {
             if(container.children[i] != undefined){
@@ -100,7 +101,7 @@ function checkWin(container:PIXI.Container):void{
                             // element.alpha = 0.5;
                         });
                         arrayWin = [];
-                        return;
+                        return true;
                     }
                 }
             }
@@ -114,7 +115,7 @@ function checkWin(container:PIXI.Container):void{
             // console.log(num);
             
             if(container.children[num] != undefined){
-                console.log(num);
+                // console.log(num);
                 
                 arrayWin.push(container.children[num]);
                 
@@ -129,13 +130,15 @@ function checkWin(container:PIXI.Container):void{
                             // element.alpha = 0.5;
                         });
                         arrayWin = [];
-                        return;
+                        return true;
                     }
                 }
             }
             num +=8;
         }
     }
+
+    return false;
     // console.log(container.children[0].texture.textureCacheIds[0]);
     
 }
@@ -161,6 +164,8 @@ function troca(obj:PIXI.Sprite):void{
         // console.log(difX, difY);
 
         if ( !adjacente(difX, difY) ){//compara se é a posição do lado
+            console.log('adjacente');
+            
             gsap.to(click1, 1, {
                 alpha: 1,
             });
@@ -197,10 +202,39 @@ function troca(obj:PIXI.Sprite):void{
             x: index1x,
             y: index1y
         })
-       
+
+        setTimeout(() => {
+            if( checkWin(container) ){
+                console.log('teve win');
+                
+                setTimeout(() => {
+                    fisica = true;
+                    setTimeout(() => {
+                        fisica = false;
+                        
+                    }, 1000);
+                }, 500);
+        
+                // container.children.forEach((element, key) => {
+                //     // console.log(container.y+container.height);
+                    
+                //     if(element.y < (350) ){
+                    
+                //         if( !(colisao(element, container.children[key+1])) ){
+                        
+                //             // element.y +=5;
+                //             gsap.to(element, 1, {
+                //                 y: element.y+pecaH
+                //             })
+                //         }
+                //     }
+        
+                // });
+            }
+        }, 1200);
     }
 
-    checkWin(container);
+    
 
 }
 
@@ -260,6 +294,10 @@ function create() {
         for (let j = 0; j < 8; j++) {
             pecaNum++;
             let numFrame = randomInt(0,4);
+            if(pecaNum>4){
+                pecaNum = 0;
+            }
+            numFrame = pecaNum;
             // console.log(numFrame);
             peca = new PIXI.Sprite(pecas[numFrame]);
             // peca.name = 'peca'+pecaNum;
@@ -386,23 +424,23 @@ function render() {
     // sprite.rotation += 0.01;
 
     // if(jogando && false){
-    if(jogando){
+
+    if(jogando && fisica){
 
         // container.children.forEach((element, key) => {
-        container.children.forEach((element) => {
+        container.children.forEach((element, key) => {
             // console.log(container.y+container.height);
-            
-            if(element.y < (350) ){
-                element.y +=5;
+            if((element.y) < (350) ){
+               
+                if( !(colisao(element, container.children[key+1])) ){
+                  
+                    element.y +=5;
+                    // gsap.to(element, 1, {
+                    //     y: element.y+pecaH
+                    // })
+                }
             }
 
-            // container.children.forEach((neighbor, keyN) => {
-            //     if(key != keyN){
-            //         if ( (neighbor.y+(pecaH/2)) > element.y ) {
-            //             neighbor.y -=5;
-            //         }
-            //     }
-            // });
         });
     }
     
@@ -410,3 +448,13 @@ function render() {
     engine.renderer.render(engine.stage);
     fpsMeter.tick();
 } // render
+
+function colisao(obja:PIXI.DisplayObject, objb:PIXI.DisplayObject):boolean{
+    let boxA = obja.getBounds();
+    let boxB = objb.getBounds();
+
+    return  boxA.x + boxA.width > boxB.x &&
+            boxA.x < boxB.x + boxB.width &&
+            boxA.y + boxA.height+5 > boxB.y &&
+            boxA.y < boxB.y + boxB.height+5;
+}
