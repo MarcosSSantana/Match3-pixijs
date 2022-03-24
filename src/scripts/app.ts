@@ -47,7 +47,8 @@ let fpsMeter: FpsMeter;
 
 const game = new PIXI.Container();
 const container = new PIXI.Container();
-let peca : PIXI.Sprite;
+const pecas : Array<PIXI.Texture> = [];
+// let peca : PIXI.Sprite;
 let pecaNum :int = 0;
 let pecaH : int = 50;
 let pecaW : int = 50;
@@ -70,6 +71,30 @@ function adjacente(difX:Number, difY:Number):boolean{
     }
 }
 
+// function criaPeca(x:int, y:int, numFrame:int):PIXI.Sprite{
+//     console.log(x, y, numFrame, pecaW, pecaH);
+    
+//     let peca = new PIXI.Sprite(pecas[numFrame]);
+//     peca.name = pecas[numFrame].textureCacheIds[0];
+//     peca.anchor.set(0.5);
+//     peca.x = x*pecaW;
+//     peca.y = y*pecaH;
+//     peca.width = pecaW;
+//     peca.height = pecaH;
+//     peca.interactive = true;
+//     peca.buttonMode = true;
+//     peca.scale.set(60);
+//     peca.on('pointerdown', (event:any) => {
+//         // console.log(event.target.texture.textureCacheIds[0]);
+//         troca(event.target)
+//     });
+//     peca.on('pointermove', onDragMove);
+
+//     // container.addChild( peca );
+
+//     return peca;
+// }
+
 function checkWin(container:PIXI.Container):boolean{
     let obj = container.children;
     console.log(obj);
@@ -78,6 +103,7 @@ function checkWin(container:PIXI.Container):boolean{
     // obj[6].destroy();
     // return;
     let arrayWin = [];
+    let arrayDeb = [];
     //CHECA COLUNA
     for (let j = 0; j < 8; j++) {
         let ini = j*8;
@@ -89,19 +115,32 @@ function checkWin(container:PIXI.Container):boolean{
                 // console.log(i);
                 
                 arrayWin.push(container.children[i]);
-                
+                arrayDeb.push(container.children[i].name);
+
                 if(arrayWin.length >3){
                     arrayWin.shift();
+                    arrayDeb.shift();
                 }
-                // console.log(arrayWin);
                 if( arrayWin.length == 3 ){
                     if( (arrayWin[0].name == arrayWin[1].name) && (arrayWin[0].name == arrayWin[2].name) ){
+                        console.log(arrayDeb);
+                        console.log(i);
+
                         arrayWin.forEach(element => {
-                            element.destroy();
-                            // element.alpha = 0.5;
+                            // let p = criaPeca(element.x, 0, 1);
+                            // criaPeca(element.x, 0, 1);
+
+                            // container.addChild( peca );
+                            
+                            // element.destroy();
+                            element.alpha = 0.5;
+
+                            // container.addChild( p );
+                            container.updateTransform();
                         });
+                        arrayDeb = [];
                         arrayWin = [];
-                        return true;
+                        // return true;
                     }
                 }
             }
@@ -283,10 +322,8 @@ function create() {
     game.addChild(background);
 
     // pecas
-    const pecas = [];
     for (let i = 1; i <=6; i++) {
-        const texture = PIXI.Texture.from(`asset_gem${i}.png`);
-        pecas.push(texture);
+        pecas.push( PIXI.Texture.from(`asset_gem${i}.png`));
     }
     // console.log(pecas[0].textureCacheIds[0]);
     
@@ -298,9 +335,34 @@ function create() {
                 pecaNum = 0;
             }
             numFrame = pecaNum;
+
+            
+            /*
             // console.log(numFrame);
             peca = new PIXI.Sprite(pecas[numFrame]);
             // peca.name = 'peca'+pecaNum;
+            peca.name = pecas[numFrame].textureCacheIds[0];
+            peca.anchor.set(0.5);
+            peca.x = i*pecaW;
+            peca.y = j*pecaH;
+            peca.width = pecaW;
+            peca.height = pecaH;
+            peca.interactive = true;
+            peca.buttonMode = true;
+            peca.on('pointerdown', (event:any) => {
+                console.log(event.target.y);
+                // console.log(event.target.texture.textureCacheIds[0]);
+                troca(event.target)
+            });
+            peca.on('pointermove', onDragMove);
+           
+            container.addChild(peca);
+            */
+
+            // container.addChild( criaPeca(i*pecaW, j*pecaH, numFrame) );
+            // criaPeca(i*pecaW, j*pecaH, numFrame);
+
+            let peca = new PIXI.Sprite(pecas[numFrame]);
             peca.name = pecas[numFrame].textureCacheIds[0];
             peca.anchor.set(0.5);
             peca.x = i*pecaW;
@@ -314,8 +376,8 @@ function create() {
                 troca(event.target)
             });
             peca.on('pointermove', onDragMove);
-           
-            container.addChild(peca);
+
+            container.addChild( peca );
             
         }
     }
@@ -327,6 +389,7 @@ function create() {
     container.x = (engine.renderer.width / 2) - ( (container.width/2) - 25);
     container.y = (engine.renderer.height / 2) - ( (container.height/2) - 50);
     console.log(container.y+410);
+    console.log(container);
     game.addChild(container);
     
 
@@ -450,11 +513,21 @@ function render() {
 } // render
 
 function colisao(obja:PIXI.DisplayObject, objb:PIXI.DisplayObject):boolean{
-    let boxA = obja.getBounds();
-    let boxB = objb.getBounds();
+    
 
-    return  boxA.x + boxA.width > boxB.x &&
+    try {
+        let boxA = obja.getBounds();
+        let boxB = objb.getBounds();
+
+        return  boxA.x + boxA.width > boxB.x &&
             boxA.x < boxB.x + boxB.width &&
             boxA.y + boxA.height+5 > boxB.y &&
             boxA.y < boxB.y + boxB.height+5;
+    } catch (error) {
+        // console.log(error);
+        
+        return false;
+    }
+
+    
 }
