@@ -27,11 +27,11 @@ const config = {
         new CopyPlugin([
             { from: 'src/index.html' },
             { from: 'src/css/style.css', to: 'css/' },
-            { from: 'src/images/logo.png', to: 'images/' },
+            // { from: 'src/images/logo.png', to: 'images/' },
             { from: 'src/images/matchup.json', to: 'images/' },
             { from: 'src/images/matchup.png', to: 'images/' },
-            { from: 'src/images/sparkles.png', to: 'images/' },
-            { from: 'src/images/sparkles.json', to: 'images/' },
+            // { from: 'src/images/sparkles.png', to: 'images/' },
+            // { from: 'src/images/sparkles.json', to: 'images/' },
         ]),
     ],
     devServer: {

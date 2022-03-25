@@ -46,61 +46,82 @@ let fpsMeter: FpsMeter;
 // const sprite = PIXI.Sprite.from('images/logo.png');
 
 const game = new PIXI.Container();
+const lobby = new PIXI.Container();
 const container = new PIXI.Container();
 const pecas : Array<PIXI.Texture> = [];
 // let peca : PIXI.Sprite;
 let pecaNum :int = 0;
-let pecaH : int = 50;
-let pecaW : int = 50;
+const pecaH : int = 50;
+const pecaW : int = 50;
+
+let time : int = 60;
+let txtTime : PIXI.Text;
+
+let points : int = 0;
+let txtPoints : PIXI.Text;
 
 let jogando : boolean = false;
 let fisica : boolean = false;
 let click1 :PIXI.Sprite;
 let click2 :PIXI.Sprite;
 let trocando : boolean = false;
+let modal : PIXI.Sprite;
+
+const style : PIXI.TextStyle = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 40,
+    fontWeight: 'bold',
+    fill: ['#ffffff', '#a1a1a1'], // gradient
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: '#000000',
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440,
+});
 
 function adjacente(difX:Number, difY:Number):boolean{
     if( ( difX == pecaW || difX == -pecaW ) && difY == 0 ){//horizontal
-        console.log('horizontal');
+        // console.log('horizontal');
         return true;
     }else if( ( difY == pecaH || difY == -pecaH )  && difX == 0 ){//vertical
-        console.log('vertical');
+        // console.log('vertical');
         return true;
     }else{
         return false;
     }
 }
 
-// function criaPeca(x:int, y:int, numFrame:int):PIXI.Sprite{
-//     console.log(x, y, numFrame, pecaW, pecaH);
+function objPeca(x:int, y:int, numFrame:int):PIXI.Sprite{
+    // console.log(x*pecaW, y*pecaH, numFrame, pecaW, pecaH);
     
-//     let peca = new PIXI.Sprite(pecas[numFrame]);
-//     peca.name = pecas[numFrame].textureCacheIds[0];
-//     peca.anchor.set(0.5);
-//     peca.x = x*pecaW;
-//     peca.y = y*pecaH;
-//     peca.width = pecaW;
-//     peca.height = pecaH;
-//     peca.interactive = true;
-//     peca.buttonMode = true;
-//     peca.scale.set(60);
-//     peca.on('pointerdown', (event:any) => {
-//         // console.log(event.target.texture.textureCacheIds[0]);
-//         troca(event.target)
-//     });
-//     peca.on('pointermove', onDragMove);
+    let peca = new PIXI.Sprite(pecas[numFrame]);
+    peca.name = pecas[numFrame].textureCacheIds[0];
+    peca.anchor.set(0.5);
+    peca.x = x*pecaW;
+    peca.y = y*pecaH;
+    peca.width = pecaW;
+    peca.height = pecaH;
+    peca.interactive = true;
+    peca.buttonMode = true;
+    // peca.scale.set(60);
+    peca.on('pointerdown', (event:any) => {
+        // console.log(event.target.texture.textureCacheIds[0]);
+        troca(event.target)
+    });
+    peca.on('pointermove', onDragMove);
 
-//     // container.addChild( peca );
+    // container.addChild( peca );
 
-//     return peca;
-// }
-/*
-function checkWin(container:PIXI.Container):boolean{
-    let obj = container.children;
-    console.log(obj);
+    return peca;
+}
 
-    // obj[0].destroy();
-    // obj[6].destroy();
+function checkWin():boolean{
+    // let obj = container.children;
+    // console.log(obj);
+
     // return;
     let arrayWin = [];
     let arrayDeb = [];
@@ -123,18 +144,18 @@ function checkWin(container:PIXI.Container):boolean{
                 }
                 if( arrayWin.length == 3 ){
                     if( (arrayWin[0].name == arrayWin[1].name) && (arrayWin[0].name == arrayWin[2].name) ){
-                        console.log(arrayDeb);
-                        console.log(i);
+                        // console.log(arrayDeb);
+                        // console.log(i);
 
                         arrayWin.forEach(element => {
                             // let p = criaPeca(element.x, 0, 1);
-                            // criaPeca(element.x, 0, 1);
-
-                            // container.addChild( peca );
-                            
+                            // container.addChild( p );
+                            // element.y = -50;
+                            // element.
+                            // element.texture = pecas[numFrame];
                             element.destroy();
                             // element.alpha = 0.5;
-
+                            
                             // container.addChild( p );
                             container.updateTransform();
                         });
@@ -148,6 +169,8 @@ function checkWin(container:PIXI.Container):boolean{
     }
     
     //CHECA LINHA
+    // console.log('checa linha');
+    
     for (let j = 0; j < 8; j++) {
         let num = j;
         for (let i = 0; i < 8; i++) {
@@ -180,102 +203,87 @@ function checkWin(container:PIXI.Container):boolean{
     return false;
     // console.log(container.children[0].texture.textureCacheIds[0]);
     
-}*/
+}
 
 function troca(obj:PIXI.Sprite):void{
-    
-    if( !trocando){
-        click1 = obj;
-        click1.alpha = 0.5;
-        trocando = true;
-        // console.log(click2);
-        
-    }else if(trocando){
-        trocando = false;
-        click2 = obj;
-        // console.log(container.children.indexOf(click1), container.children.indexOf(click2));
-        // console.log(click1.x, click2.x);
-        // console.log(click1.y, click2.y);
-        
-        // pega a diferença
-        let difX = click1.x-click2.x;
-        let difY = click1.y-click2.y;
-        // console.log(difX, difY);
-
-        if ( !adjacente(difX, difY) ){//compara se é a posição do lado
-            console.log('adjacente');
+    if(jogando){
+        if( !trocando){
+            click1 = obj;
+            click1.alpha = 0.5;
+            trocando = true;
+            // console.log(click2);
             
+        }else if(trocando){
+            trocando = false;
+            click2 = obj;
+            
+            // pega a diferença
+            let difX = click1.x-click2.x;
+            let difY = click1.y-click2.y;
+            // console.log(difX, difY);
+    
+            if ( !adjacente(difX, difY) ){//compara se é a posição do lado
+                // console.log('adjacente');
+                
+                gsap.to(click1, 1, {
+                    alpha: 1,
+                });
+                return;
+            }
+    
+          
+            container.swapChildren(click1, click2);// troca as posições
+            var index1x = click1.x;
+            var index1y = click1.y;
+            
+            var index2x = click2.x;
+            var index2y = click2.y;
+            
+            //anima a troca
             gsap.to(click1, 1, {
                 alpha: 1,
+                x: index2x,
+                y: index2y
             });
-            return;
-        }
-
-        // if( ( difX == 50 || difX == -50 ) && difY == 0 ){//horizontal
-        //     console.log('horizontal');
-        // }else if( ( difY == 50 || difY == -50 )  && difX == 0 ){//vertical
-        //     console.log('vertical');
-        // }else{
-        //     gsap.to(click1, 1, {
-        //         alpha: 1,
-        //     });
-        //     return;
-        // }
-        // if(click1.x)
-        container.swapChildren(click1, click2);// troca as posições
-        var index1x = click1.x;
-        var index1y = click1.y;
-        
-	    var index2x = click2.x;
-	    var index2y = click2.y;
-        
-        //anima a troca
-        gsap.to(click1, 1, {
-            alpha: 1,
-            x: index2x,
-            y: index2y
-        });
-
-        gsap.to(click2, 1, {
-            alpha: 1,
-            x: index1x,
-            y: index1y
-        })
-        /*
-        setTimeout(() => {
-            if( checkWin(container) ){
-                console.log('teve win');
-                
-                setTimeout(() => {
-                    fisica = true;
-                    setTimeout(() => {
-                        fisica = false;
-                        
-                    }, 1000);
-                }, 500);
-        
-                // container.children.forEach((element, key) => {
-                //     // console.log(container.y+container.height);
-                    
-                //     if(element.y < (350) ){
-                    
-                //         if( !(colisao(element, container.children[key+1])) ){
-                        
-                //             // element.y +=5;
-                //             gsap.to(element, 1, {
-                //                 y: element.y+pecaH
-                //             })
-                //         }
-                //     }
-        
-                // });
-            }
-        }, 1200);
-        */
-    }
-
     
-
+            gsap.to(click2, 1, {
+                alpha: 1,
+                x: index1x,
+                y: index1y
+            })
+            /*
+            setTimeout(() => {
+                if( checkWin(container) ){
+                    console.log('teve win');
+                    
+                    setTimeout(() => {
+                        fisica = true;
+                        setTimeout(() => {
+                            fisica = false;
+                            
+                        }, 1000);
+                    }, 500);
+            
+                    // container.children.forEach((element, key) => {
+                    //     // console.log(container.y+container.height);
+                        
+                    //     if(element.y < (350) ){
+                        
+                    //         if( !(colisao(element, container.children[key+1])) ){
+                            
+                    //             // element.y +=5;
+                    //             gsap.to(element, 1, {
+                    //                 y: element.y+pecaH
+                    //             })
+                    //         }
+                    //     }
+            
+                    // });
+                }
+            }, 1200);
+            */
+        }
+    }
 }
 
 function resizeCanvas(): void {
@@ -283,6 +291,7 @@ function resizeCanvas(): void {
         engine.renderer.resize(window.innerWidth, window.innerHeight);
         engine.stage.scale.x = window.innerWidth / engine.renderer.width;
         engine.stage.scale.y = window.innerHeight / engine.renderer.height;
+        
     };
 
     resize();
@@ -292,6 +301,31 @@ function resizeCanvas(): void {
 
 function randomInt(min : int, max:int) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function criaPecas(){
+    container.removeChildren();
+    for (let i = 0; i < 8; i++) {//cria pecas
+        for (let j = 0; j < 8; j++) {
+            pecaNum++;
+            let numFrame = randomInt(0,4);
+            if(pecaNum>4){
+                pecaNum = 0;
+            }
+            numFrame = pecaNum;
+            
+            container.addChild( objPeca(i, j, numFrame) );
+        }
+    }
+    // console.log(pecaNum);
+}
+
+function animaModal():void{
+    
+    gsap.to(modal, 1, {
+        visible: true,
+        y: engine.renderer.height/2,
+    });
 }
 
 // ==============
@@ -305,7 +339,6 @@ function load() {
     engine.loader.add('matchup', 'images/matchup.json');
     engine.loader.add('sparkles', 'images/sparkles.json');
     engine.loader.load(create);
-    // create();
 } // load
 
 function create() {
@@ -314,91 +347,11 @@ function create() {
     /* ***************************** */
 
     // background
-    const background = new PIXI.Sprite( PIXI.Texture.from(`asset_bg.png`) );
+    const background = new PIXI.Sprite( PIXI.Texture.from(`asset_title_bg.png`) );
     background.anchor.set(0.5);
     background.x = engine.renderer.width / 2;
     background.y = engine.renderer.height / 2;
-    // container.width = engine.renderer.width;
-    // container.height = engine.renderer.height;
-    game.addChild(background);
-
-    // pecas
-    for (let i = 1; i <=6; i++) {
-        pecas.push( PIXI.Texture.from(`asset_gem${i}.png`));
-    }
-    // console.log(pecas[0].textureCacheIds[0]);
-    
-    for (let i = 0; i < 8; i++) {//cria pecas
-        for (let j = 0; j < 8; j++) {
-            pecaNum++;
-            let numFrame = randomInt(0,4);
-            if(pecaNum>4){
-                pecaNum = 0;
-            }
-            numFrame = pecaNum;
-
-            
-            /*
-            // console.log(numFrame);
-            peca = new PIXI.Sprite(pecas[numFrame]);
-            // peca.name = 'peca'+pecaNum;
-            peca.name = pecas[numFrame].textureCacheIds[0];
-            peca.anchor.set(0.5);
-            peca.x = i*pecaW;
-            peca.y = j*pecaH;
-            peca.width = pecaW;
-            peca.height = pecaH;
-            peca.interactive = true;
-            peca.buttonMode = true;
-            peca.on('pointerdown', (event:any) => {
-                console.log(event.target.y);
-                // console.log(event.target.texture.textureCacheIds[0]);
-                troca(event.target)
-            });
-            peca.on('pointermove', onDragMove);
-           
-            container.addChild(peca);
-            */
-
-            // container.addChild( criaPeca(i*pecaW, j*pecaH, numFrame) );
-            // criaPeca(i*pecaW, j*pecaH, numFrame);
-
-            let peca = new PIXI.Sprite(pecas[numFrame]);
-            peca.name = pecas[numFrame].textureCacheIds[0];
-            peca.anchor.set(0.5);
-            peca.x = i*pecaW;
-            peca.y = j*pecaH;
-            peca.width = pecaW;
-            peca.height = pecaH;
-            peca.interactive = true;
-            peca.buttonMode = true;
-            peca.on('pointerdown', (event:any) => {
-                // console.log(event.target.texture.textureCacheIds[0]);
-                troca(event.target)
-            });
-            peca.on('pointermove', onDragMove);
-
-            container.addChild( peca );
-            
-        }
-    }
-    console.log(pecaNum);
-    
-    // container.swapChildren()
-    container.width = 410;
-    container.height = 410;
-    container.x = (engine.renderer.width / 2) - ( (container.width/2) - 25);
-    container.y = (engine.renderer.height / 2) - ( (container.height/2) - 50);
-    console.log(container.y+410);
-    console.log(container);
-    game.addChild(container);
-    
-
-    // /* Sprite */
-    // sprite.anchor.set(0.5);
-    // sprite.x = engine.renderer.width / 2;
-    // sprite.y = 100;
-    // game.addChild(sprite);
+    lobby.addChild(background);
 
     // Button play
     const btnPlay = new PIXI.Sprite( PIXI.Texture.from(`asset_large_btn_down.png`) );
@@ -416,11 +369,106 @@ function create() {
         event.target.alpha = 1;
         engine.stage = game;
         jogando = true;
+        points = 0;
+        time = 60;
+        criaPecas();
     });
 
-    const style = new PIXI.TextStyle({
+    const btnText = new PIXI.Text('PLAY', style);
+    btnText.anchor.set(0.5);
+    btnPlay.addChild(btnText);
+    lobby.addChild(btnPlay);
+    engine.stage.addChild(lobby);
+
+    /* ***************************** */
+    /*         GAME                  */
+    /* ***************************** */
+
+    // container
+    container.x = (engine.renderer.width / 2) -  (410/2)+30;
+    container.y = (engine.renderer.height / 2) - ( (410/2) - 55);
+    game.addChild(container);
+
+    // frames pecas 
+    for (let i = 1; i <=6; i++) {
+        pecas.push( PIXI.Texture.from(`asset_gem${i}.png`));
+    }
+    
+    // gameTable
+    const gameTable = new PIXI.Sprite( PIXI.Texture.from(`asset_bg.png`) );
+    gameTable.anchor.set(0.5);
+    gameTable.x = engine.renderer.width / 2;
+    gameTable.y = engine.renderer.height / 2;
+    game.addChild(gameTable);
+
+    //btn check win test function
+    const btnWin = new PIXI.Sprite( PIXI.Texture.from(`asset_large_btn_down.png`) );
+    btnWin.anchor.set(0.5);
+    btnWin.x = engine.renderer.width / 2;
+    btnWin.y = container.y+470;
+    btnWin.interactive = true;
+    btnWin.buttonMode = true;
+    btnWin.on('pointerdown', (event:any) => {
+        event.target.alpha = 0.4;
+        event.target.scale.set(0.9);
+        // this.texture = test;
+    });
+    btnWin.on('pointerup', (event:any) => {
+        event.target.alpha = 1;
+
+        if( checkWin() ){
+            points++;
+            // console.log('teve win');
+            setTimeout(() => {
+                fisica = true;
+                setTimeout(() => {
+                    fisica = false;
+                }, 1000);
+            }, 500);
+        }
+    });
+
+    const txtTextWin = new PIXI.Text('check_Win');
+    txtTextWin.anchor.set(0.5);
+    btnWin.addChild(txtTextWin);
+    game.addChild(btnWin);
+
+    //time
+    txtTime = new PIXI.Text("Time : "+time.toString(), style);
+    txtTime.anchor.set(0.5);
+    txtTime.x = engine.renderer.width / 2 + 200;
+    txtTime.y = container.y-80;
+    game.addChild(txtTime);
+
+    //points
+    txtPoints = new PIXI.Text("P : "+points.toString(), style);
+    txtPoints.anchor.set(0.5);
+    txtPoints.x = engine.renderer.width / 2 - 225;
+    txtPoints.y = container.y-80;
+    game.addChild(txtPoints);
+
+    // modal
+    modal = new PIXI.Sprite( PIXI.Texture.from(`asset_pause_menu.png`) );
+    modal.anchor.set(0.5);
+    modal.x = engine.renderer.width / 2;
+    modal.y = engine.renderer.height / 2 + 400;
+    modal.visible = false;
+    game.addChild(modal);
+
+    // btnMenu
+    let btnMenu = new PIXI.Sprite( PIXI.Texture.from(`asset_button_down.png`) );
+    btnMenu.anchor.set(0.5);
+    btnMenu.interactive = true;
+    btnMenu.buttonMode = true;
+    btnMenu.on('pointerup', () => {
+        engine.stage = lobby;
+    });
+    modal.addChild(btnMenu);
+
+    //txtMenu
+    let txtMenu = new PIXI.Text("menu",new PIXI.TextStyle({
         fontFamily: 'Arial',
-        fontSize: 46,
+        fontSize: 25,
         fontWeight: 'bold',
         fill: ['#ffffff', '#a1a1a1'], // gradient
         strokeThickness: 5,
@@ -431,16 +479,11 @@ function create() {
         dropShadowDistance: 6,
         wordWrap: true,
         wordWrapWidth: 440,
-    });
-    const btnText = new PIXI.Text('PLAY', style);
-    btnText.anchor.set(0.5);
-    btnPlay.addChild(btnText);
-
-    engine.stage.addChild(btnPlay);
+    }) );
+    txtMenu.anchor.set(0.5);
+    btnMenu.addChild(txtMenu);
 
     // console.log(engine.stage);
-
-
 
     /* FPS */
     const fpsMeterItem = document.createElement('div');
@@ -474,21 +517,26 @@ function update() {
     /* ***************************** */
     /* Update your Game Objects here */
     /* ***************************** */
+    if(jogando){
+        if(time > 0){
+            time -= 0.01;
+            txtTime.text = "Time : "+time.toFixed(0).toString();
+            txtPoints.text = "P : "+points.toString();
+            container.alpha = 1;
 
-} // update
-
-function render() {
-    requestAnimationFrame(render);
-
-    /* ***************************** */
-    /* Render your Game Objects here */
-    /* ***************************** */
-
-    /* Sprite */
-    // sprite.rotation += 0.01;
+            modal.y = engine.renderer.height / 2 + 400;
+            modal.visible = false;
+        }else{
+            // console.log('fim de jogo');
+            jogando = false;
+            container.alpha = 0.5;
+            animaModal();
+        }
+       
+    }
+    
 
     // if(jogando && false){
-
     if(jogando && fisica){
 
         // container.children.forEach((element, key) => {
@@ -507,14 +555,21 @@ function render() {
 
         });
     }
-    
+
+} // update
+
+function render() {
+    requestAnimationFrame(render);
+
+    /* ***************************** */
+    /* Render your Game Objects here */
+    /* ***************************** */
 
     engine.renderer.render(engine.stage);
     fpsMeter.tick();
 } // render
 
 function colisao(obja:PIXI.DisplayObject, objb:PIXI.DisplayObject):boolean{
-    
 
     try {
         let boxA = obja.getBounds();
