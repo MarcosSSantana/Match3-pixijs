@@ -94,7 +94,7 @@ function adjacente(difX:Number, difY:Number):boolean{
 
 //     return peca;
 // }
-
+/*
 function checkWin(container:PIXI.Container):boolean{
     let obj = container.children;
     console.log(obj);
@@ -132,15 +132,15 @@ function checkWin(container:PIXI.Container):boolean{
 
                             // container.addChild( peca );
                             
-                            // element.destroy();
-                            element.alpha = 0.5;
+                            element.destroy();
+                            // element.alpha = 0.5;
 
                             // container.addChild( p );
                             container.updateTransform();
                         });
                         arrayDeb = [];
                         arrayWin = [];
-                        // return true;
+                        return true;
                     }
                 }
             }
@@ -180,7 +180,7 @@ function checkWin(container:PIXI.Container):boolean{
     return false;
     // console.log(container.children[0].texture.textureCacheIds[0]);
     
-}
+}*/
 
 function troca(obj:PIXI.Sprite):void{
     
@@ -241,7 +241,7 @@ function troca(obj:PIXI.Sprite):void{
             x: index1x,
             y: index1y
         })
-
+        /*
         setTimeout(() => {
             if( checkWin(container) ){
                 console.log('teve win');
@@ -271,6 +271,7 @@ function troca(obj:PIXI.Sprite):void{
                 // });
             }
         }, 1200);
+        */
     }
 
     
